@@ -48,7 +48,7 @@ function import_xml(xpath){
 }
 
 function send_mail(value){
-  GmailApp.sendEmail("jyuon312k@gmail.com", "今日の天気予報", value, {name: "EveSquare"})
+  GmailApp.sendEmail(YUR_MAIL_ADDRESS, "今日の天気予報", value, {name: "EveSquare"})
 }
 
 
