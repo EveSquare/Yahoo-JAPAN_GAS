@@ -51,6 +51,12 @@ function send_mail(value){
   GmailApp.sendEmail(YOUR_MAIL_ADDRESS, "今日の天気予報", value, {name: "EveSquare"})
 }
 
+function get_date(){
+  var date = new Date();
+  // 今日の日付を表示
+  return Utilities.formatDate( date, 'Asia/Tokyo', 'yyyyMMdd');
+}
+
 
 function myFunction() {
   var url = "https://weather.yahoo.co.jp/weather/jp/23/5110.html";
@@ -70,14 +76,27 @@ function myFunction() {
     precip_val.push(get_sheet(i+3,1));
   }
   
+  //占い情報総合得点
+  var uranai_url = "https://fortune.yahoo.co.jp/12astro/" + get_date() + "/pisces.html";
+  var uranai = [uranai_url,"//*[@id='lnk01']/div/div/div/div/div/div[1]/div/div/p"];
+  
+  var uranai_catch = [uranai_url, "//*[@id='lnk01']/div/div/div/div/div/div[2]/div/dl/dt"];
+  var uranai_body = [uranai_url, "//*[@id='lnk01']/div/div/div/div/div/div[2]/div/dl/dd"];
+  
   set_sheet(1,1,import_xml(temp_high));
   set_sheet(2,1,import_xml(temp_low));
   set_sheet(3,1,import_xml(item_clothing));
+  set_sheet(15,1,import_xml(uranai));
+  set_sheet(16,1,import_xml(uranai_catch));
+  set_sheet(17,1,import_xml(uranai_body));
   var val = [];
   val.push(get_sheet(1,1));
   val.push(get_sheet(2,1));
   val.push(get_sheet(3,2));
+  val.push(get_sheet(15,1));
+  val.push(get_sheet(16,1));
+  val.push(get_sheet(17,1));
   
-  var mail_body = `今日の最高気温は${val[0]}°C。\n今日の最低気温は${val[1]}°C。\n${val[2]}\n降水確率は\n0-6時で${precip_val[0]}\n 6-12時で${precip_val[1]}\n 12-18時で${precip_val[2]}\n 18-24時で${precip_val[3]}です。\n`;
+  var mail_body = `${get_date()}\n今日の最高気温は${val[0]}°C。\n今日の最低気温は${val[1]}°C。\n${val[2]}\n降水確率は\n0-6時で${precip_val[0]}\n 6-12時で${precip_val[1]}\n 12-18時で${precip_val[2]}\n 18-24時で${precip_val[3]}です。\n\n今日の総合得点は${val[3]}です。\n\n${val[4]}\n${val[5]}`;
   send_mail(mail_body);
 }
